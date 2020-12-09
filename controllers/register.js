@@ -1,3 +1,5 @@
+const auth = require('./authorization')
+
 const handleRegister = (req, res, db, bcrypt) => {
   const { email, name, password } = req.body;
   if (!email || !name || !password) {
@@ -20,8 +22,8 @@ const handleRegister = (req, res, db, bcrypt) => {
             joined: new Date()
           })
           .then(user => {
-            res.json(user[0]);
-          })
+            return auth.createSessions(user[0]) //On attribue un token
+          }).then(session => res.json(session))
       })
       .then(trx.commit)
       .catch(trx.rollback)
